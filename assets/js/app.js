@@ -1,46 +1,44 @@
 function calculateLoanPayments(loanAmount, annualInterestRate, loanTermMonths, upfrontFee, monthlyFee) {
-
-    const monthlyInterestRate = annualInterestRate / 100 / 12; // Преобразование годовой процентной ставки в месячную
-    const monthlyPayment = (loanAmount * monthlyInterestRate) / (1 - Math.pow(1 + monthlyInterestRate, -loanTermMonths)); // Расчет ежемесячного аннуитетного платежа
-
+    const monthlyInterestRate = annualInterestRate / 100 / 12;
+    
     let remainingLoanAmount = loanAmount;
     let totalPayment = 0;
 
     const monthlyPayments = [];
 
-    // Расчет выплат
     for (let month = 1; month <= loanTermMonths; month++) {
+        const interestPayment = remainingLoanAmount * monthlyInterestRate;
+        const principalPayment = loanAmount / loanTermMonths;
+        remainingLoanAmount -= principalPayment;
 
-        const interestPayment = remainingLoanAmount * monthlyInterestRate; // Расчет процентной части платежа
-        const principalPayment = monthlyPayment - interestPayment; // Расчет части платежа, погашающей тело кредита
-        remainingLoanAmount -= principalPayment; // Обновление оставшейся суммы долга
-        totalPayment += monthlyPayment; // Суммирование общей выплаченной суммы
-
-        // Округление
         const roundedPrincipalPayment = Math.round(principalPayment * 100) / 100;
         const roundedInterestPayment = Math.round(interestPayment * 100) / 100;
         const roundedRemainingLoanAmount = Math.round(remainingLoanAmount * 100) / 100;
+        const roundedUpfrontFee = Math.round(upfrontFee * loanAmount) / 100;
 
-        // Добавление инфо о месяце в массив
+        totalPayment += principalPayment + interestPayment + monthlyFee;
+
         monthlyPayments.push({
             month,
+            remainingLoanAmount: roundedRemainingLoanAmount,
             principalPayment: roundedPrincipalPayment,
             interestPayment: roundedInterestPayment,
-            totalPayment: monthlyPayment,
-            remainingLoanAmount: roundedRemainingLoanAmount,
+            upfrontFee: roundedUpfrontFee,
+            monthlyFee: monthlyFee,
+            totalPayment: (principalPayment + interestPayment + monthlyFee).toFixed(2),
         });
     }
 
-    
-    const upfrontFeeAmount = loanAmount * (upfrontFee / 100); // Расчет комиссии
+    const roundedUpfrontFeeAmount = Math.round(upfrontFee * loanAmount) / 100;
+    totalPayment += roundedUpfrontFeeAmount;
 
-    totalPayment += upfrontFeeAmount; // Расчет общей выплаты
+    const monthlyFeeAmount = monthlyFee * loanTermMonths;
 
-    const monthlyFeeAmount = monthlyFee * loanTermMonths; // Расчет ежемесячной комиссии
+    totalPayment = Math.round(totalPayment * 100) / 100;
 
-    totalPayment = Math.round(totalPayment * 100) / 100; // Округление общей выплаты
-    return { monthlyPayments, totalPayment, upfrontFeeAmount, monthlyFeeAmount };
+    return { monthlyPayments, totalPayment, roundedUpfrontFeeAmount, monthlyFeeAmount };
 }
+
 
 // Функция видимости полей
 function UpdateInput() {
@@ -67,32 +65,66 @@ function calculate() {
                 return;
             }
 
-            const { monthlyPayments, totalPayment, upfrontFeeAmount, monthlyFeeAmount } = calculateLoanPayments(loanAmount, annualInterestRate, loanTermMonths, upfrontFee, monthlyFee);
+            const { monthlyPayments, totalPayment, roundedUpfrontFeeAmount, monthlyFeeAmount } = calculateLoanPayments(loanAmount, annualInterestRate, loanTermMonths, upfrontFee, monthlyFee);
 
-    // Вывод информации
-    const resultElement = document.getElementById('result');
-    let outputHTML = `<h5 class="mb-3">Ежемесячные выплаты:</h5>`;
-            
-    monthlyPayments.forEach(payment => {
+            // Вывод информации
+            const resultElement = document.getElementById('result');
+            let outputHTML = `
+                <h5 class="mb-3">Схема выплат по кредиту:</h5>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Месяц</th>
+                            <th scope="col">Задолженность по кредиту</th>
+                            <th scope="col">Погашение кредита</th>
+                            <th scope="col">Проценты по кредиту</th>
+                            <th scope="col">Единоразовая комиссия</th>
+                            <th scope="col">Ежемесячная комиссия</th>
+                            <th scope="col">Выплаты в месяц</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+            monthlyPayments.forEach(payment => {
+                outputHTML += `
+                    <tr>
+                        <th scope="row">${payment.month}</th>
+                        <td>${payment.remainingLoanAmount.toFixed(2)}</td>
+                        <td>${payment.principalPayment.toFixed(2)}</td>
+                        <td>${payment.interestPayment.toFixed(2)}</td>
+                        <td>${payment.upfrontFee.toFixed(2)}</td>
+                        <td>${payment.monthlyFee.toFixed(2)}</td>
+                        <td>${payment.totalPayment}</td>
+                    </tr>`;
+            });
+
+            const totalRemainingLoanAmount = monthlyPayments[monthlyPayments.length - 1].remainingLoanAmount;
+            const totalPrincipalPayment = monthlyPayments.reduce((sum, payment) => sum + payment.principalPayment, 0);
+            const totalInterestPayment = monthlyPayments.reduce((sum, payment) => sum + payment.interestPayment, 0);
+            const totalUpfrontFee = roundedUpfrontFeeAmount;
+            const totalMonthlyFee = monthlyFeeAmount;
+            const roundedTotalPayment = totalPrincipalPayment + totalInterestPayment + totalUpfrontFee + totalMonthlyFee;
+
         outputHTML += `
-            <div class="mb-3">
-                <h6>Месяц ${payment.month}</h6>
-                <ul>
-                    <li><strong>Основной долг:</strong> ${payment.principalPayment.toFixed(2)}</li>
-                     <li><strong>Проценты:</strong> ${payment.interestPayment.toFixed(2)}</li>
-                     <li><strong>Итого:</strong> ${payment.totalPayment.toFixed(2)}</li>
-                     <li><strong>Остаток:</strong> ${payment.remainingLoanAmount.toFixed(2)}</li>
-                </ul>
-        </div>`;
-});
+            <tfoot>
+                <tr>
+                    <th scope="row">Итого</th>
+                    <td>${totalRemainingLoanAmount.toFixed(2)}</td>
+                    <td>${totalPrincipalPayment.toFixed(2)}</td>
+                    <td>${totalInterestPayment.toFixed(2)}</td>
+                    <td>${totalUpfrontFee.toFixed(2)}</td>
+                    <td>${totalMonthlyFee.toFixed(2)}</td>
+                    <td>${roundedTotalPayment.toFixed(2)}</td>
+                </tr>
+            </tfoot>
+        </table>`;
+            outputHTML += `</tbody></table>`;
+            outputHTML += `<h5 class="mt-4">Единоразовая комиссия: ${roundedUpfrontFeeAmount.toFixed(2)}</h5>`;
+            outputHTML += `<h5>Ежемесячная комиссия: ${monthlyFeeAmount.toFixed(2)}</h5>`;
+            outputHTML += `<h5 class="mt-4">Общая переплата по кредиту: ${totalPayment.toFixed(2)}</h5>`;
 
-// Вывод информации
-outputHTML += `<h5 class="mt-4">Единоразовая комиссия: ${upfrontFeeAmount.toFixed(2)}</h5>`;
-outputHTML += `<h5>Ежемесячная комиссия: ${monthlyFeeAmount.toFixed(2)}</h5>`;
-outputHTML += `<h5 class="mt-4">Общая переплата по кредиту: ${totalPayment.toFixed(2)}</h5>`;
-
-resultElement.innerHTML = outputHTML;
-break;
+            resultElement.innerHTML = outputHTML;
+            break;
 
         default:
             alert('Выберите вариант для вычисления.');
