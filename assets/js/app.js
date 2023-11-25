@@ -1,31 +1,53 @@
 function calculateLoanPayments(loanAmount, annualInterestRate, loanTermMonths) {
-    const monthlyInterestRate = annualInterestRate / 100 / 12;
+    const monthlyInterestRate = Math.round((annualInterestRate / 100 / 12) * 100) / 100;
 
     let remainingLoanAmount = loanAmount;
     let totalPayment = 0;
 
     const monthlyPayments = [];
 
-    for (let month = 1; month <= loanTermMonths; month++) {
-        const interestPayment = remainingLoanAmount * monthlyInterestRate;
-        const principalPayment = loanAmount / loanTermMonths;
+    const firstMonth = {
+        month: 1,
+        remainingLoanAmount: remainingLoanAmount,
+        principalPayment: Math.round((loanAmount / loanTermMonths) * 100) / 100,
+        interestPayment: Math.round(remainingLoanAmount * monthlyInterestRate * 100) / 100,
+        totalPayment: (
+            Math.round((loanAmount / loanTermMonths + remainingLoanAmount * monthlyInterestRate) * 100) / 100
+        ).toFixed(2),
+    };
+
+    monthlyPayments.push(firstMonth);
+    totalPayment += parseFloat(firstMonth.totalPayment);
+
+    for (let month = 2; month <= loanTermMonths; month++) {
+        const interestPayment = Math.round(remainingLoanAmount * monthlyInterestRate * 100) / 100;
+        const principalPayment = Math.round((loanAmount / loanTermMonths) * 100) / 100;
         remainingLoanAmount -= principalPayment;
 
         totalPayment += principalPayment + interestPayment;
 
         monthlyPayments.push({
             month,
-            remainingLoanAmount: Math.round(remainingLoanAmount * 100) / 100,
+            remainingLoanAmount: Math.ceil(remainingLoanAmount * 100) / 100,
             principalPayment: Math.round(principalPayment * 100) / 100,
             interestPayment: Math.round(interestPayment * 100) / 100,
-            totalPayment: (principalPayment + interestPayment).toFixed(2),
+            totalPayment: (
+                Math.round((principalPayment + interestPayment) * 100) / 100
+            ).toFixed(2),
         });
     }
+    
 
     totalPayment = Math.round(totalPayment * 100) / 100;
 
-    return { monthlyPayments, totalPayment };
-}
+       const lastMonth = monthlyPayments[monthlyPayments.length - 1];
+       if (totalPayment !== lastMonth.totalPayment) {
+           const diff = totalPayment - lastMonth.totalPayment;
+           lastMonth.totalPayment = (parseFloat(lastMonth.totalPayment) + diff).toFixed(2);
+       }
+   
+       return { monthlyPayments, totalPayment };
+   }
 
 const loanAmount = 100; // Сумма кредита
 const annualInterestRate = 60; // Годовая процентная ставка
