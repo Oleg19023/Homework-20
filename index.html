@@ -14,60 +14,9 @@
     <link rel="stylesheet" href="./assets/css/style.css">
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="white">
-            <div class="container-fluid">
-              <a class="navbar-brand" href="#"><i class="fa-solid fa-house"></i></a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto">
-                  <li class="nav-item">
-                    <a class="nav-link" aria-current="page" href="#">More</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">Examples</a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="#">About</a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-        </nav>
-    </header>
-    <main class="container">
-        <div class="component">
-            <h4>Выбери что посчитать:</h4>
-            <form>
-                <div class="mb-3">
-                    <select id="question" class="form-select" aria-label="Default select example" onchange="UpdateInput()">
-                        <option selected >Выбрать</option>
-                        <option value="3">Схема выплаты кредита</option>
-                    </select>
-                </div>
-                <div class="mb-3" id="additionalInputs3" style="display: none;">
-                  <label for="Input4" class="form-label">Срок кредитования (в месяцах):</label>
-                  <input type="number" class="form-control" id="Input4" placeholder="Введите срок кредитования">
-                  
-                  <label for="Input5" class="form-label">Сумма кредита (денежные единицы):</label>
-                  <input type="number" class="form-control" id="Input5" placeholder="Введите сумму кредита">
-                  
-                  <label for="Input6" class="form-label">Процентная ставка (% годовых):</label>
-                  <input type="number" class="form-control" id="Input6" placeholder="Введите процентную ставку">
-                  
-                  <label for="Input7" class="form-label">Единоразовая комиссия (%):</label>
-                  <input type="number" class="form-control" id="Input7" placeholder="Введите единоразовую комиссию">
-                  
-                  <label for="Input8" class="form-label">Ежемесячная комиссия (денежные единицы):</label>
-                  <input type="number" class="form-control" id="Input8" placeholder="Введите ежемесячную комиссию">
-              </div>
-                <button type="button" class="btn btn-primary" onclick="calculate()">Посчитать</button>
-                <div id="result"></div>                
-              </form>
-        </div>
-    </main>
+  <main>
+    <h1>В консоле</h1>
+  </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <script src="./assets/js/app.js"></script>
 </body>
