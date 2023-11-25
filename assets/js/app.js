@@ -11,8 +11,8 @@ function calculateLoanPayments(loanAmount, annualInterestRate, loanTermMonths, u
         const principalPayment = loanAmount / loanTermMonths;
         remainingLoanAmount -= principalPayment;
 
-        const roundedPrincipalPayment = Math.round(principalPayment * 100) / 100;
-        const roundedInterestPayment = Math.round(interestPayment * 100) / 100;
+        const roundedPrincipalPayment = Math.ceil(principalPayment * 100) / 100;
+        const roundedInterestPayment = Math.ceil(interestPayment * 100) / 100;
         const roundedRemainingLoanAmount = Math.round(remainingLoanAmount * 100) / 100;
         const roundedUpfrontFee = Math.round(upfrontFee * loanAmount) / 100;
 
@@ -32,9 +32,9 @@ function calculateLoanPayments(loanAmount, annualInterestRate, loanTermMonths, u
     const roundedUpfrontFeeAmount = Math.round(upfrontFee * loanAmount) / 100;
     totalPayment += roundedUpfrontFeeAmount;
 
-    const monthlyFeeAmount = monthlyFee * loanTermMonths;
+    totalPayment = Math.floor(totalPayment * 100) / 100;
 
-    totalPayment = Math.round(totalPayment * 100) / 100;
+    const monthlyFeeAmount = monthlyFee * loanTermMonths;
 
     return { monthlyPayments, totalPayment, roundedUpfrontFeeAmount, monthlyFeeAmount };
 }
@@ -110,7 +110,7 @@ function calculate() {
                 <tr>
                     <th scope="row">Итого</th>
                     <td>${totalRemainingLoanAmount.toFixed(2)}</td>
-                    <td>${totalPrincipalPayment.toFixed(2)}</td>
+                    <td>${totalPrincipalPayment.toFixed(0)}</td>
                     <td>${totalInterestPayment.toFixed(2)}</td>
                     <td>${totalUpfrontFee.toFixed(2)}</td>
                     <td>${totalMonthlyFee.toFixed(2)}</td>
