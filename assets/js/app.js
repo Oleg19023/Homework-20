@@ -110,7 +110,7 @@ function calculate() {
                 <tr>
                     <th scope="row">Итого</th>
                     <td>${totalRemainingLoanAmount.toFixed(2)}</td>
-                    <td>${totalPrincipalPayment.toFixed(0)}</td>
+                    <td>${totalPrincipalPayment.toFixed(2)}</td>
                     <td>${totalInterestPayment.toFixed(2)}</td>
                     <td>${totalUpfrontFee.toFixed(2)}</td>
                     <td>${totalMonthlyFee.toFixed(2)}</td>
