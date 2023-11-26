@@ -36,18 +36,21 @@ function calculateLoanPayments(loanAmount, annualInterestRate, loanTermMonths) {
             ).toFixed(2),
         });
     }
-    
 
     totalPayment = Math.round(totalPayment * 100) / 100;
 
-       const lastMonth = monthlyPayments[monthlyPayments.length - 1];
-       if (totalPayment !== lastMonth.totalPayment) {
-           const diff = totalPayment - lastMonth.totalPayment;
-           lastMonth.totalPayment = (parseFloat(lastMonth.totalPayment) + diff).toFixed(2);
-       }
-   
-       return { monthlyPayments, totalPayment };
-   }
+    const lastMonth = monthlyPayments[monthlyPayments.length - 1];
+    const diff = totalPayment - lastMonth.totalPayment;
+
+    if (diff > 0 && diff <= remainingLoanAmount) {
+        if (loanTermMonths - lastMonth.month === 1) {
+            lastMonth.totalPayment = (parseFloat(lastMonth.totalPayment) + diff).toFixed(2);
+            remainingLoanAmount -= diff;
+        }
+    }
+
+    return { monthlyPayments, totalPayment };
+}
 
 const loanAmount = 100; // Сумма кредита
 const annualInterestRate = 60; // Годовая процентная ставка
