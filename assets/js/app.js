@@ -21,19 +21,21 @@ function calculateLoanPayments(loanAmount, annualInterestRate, loanTermMonths) {
 
     for (let month = 2; month <= loanTermMonths; month++) {
         const interestPayment = Math.round(remainingLoanAmount * monthlyInterestRate * 100) / 100;
-        const principalPayment = Math.round((loanAmount / loanTermMonths) * 100) / 100;
+        let principalPayment = Math.round((loanAmount / loanTermMonths) * 100) / 100;
         remainingLoanAmount -= principalPayment;
-
         totalPayment += principalPayment + interestPayment;
+        totalPayment=Math.round((principalPayment + interestPayment) * 100) / 100
+        if(month==loanTermMonths){
+            principalPayment=remainingLoanAmount;
+            totalPayment=Math.round((principalPayment + interestPayment) * 100) / 100
+        }
 
         monthlyPayments.push({
             month,
-            remainingLoanAmount: Math.ceil(remainingLoanAmount * 100) / 100,
+            remainingLoanAmount: Math.round(remainingLoanAmount * 100) / 100,
             principalPayment: Math.round(principalPayment * 100) / 100,
             interestPayment: Math.round(interestPayment * 100) / 100,
-            totalPayment: (
-                Math.round((principalPayment + interestPayment) * 100) / 100
-            ).toFixed(2),
+            totalPayment: totalPayment
         });
     }
 
@@ -41,14 +43,6 @@ function calculateLoanPayments(loanAmount, annualInterestRate, loanTermMonths) {
 
     const lastMonth = monthlyPayments[monthlyPayments.length - 1];
     const diff = totalPayment - lastMonth.totalPayment;
-
-    if (diff > 0 && diff <= remainingLoanAmount) {
-        if (loanTermMonths - lastMonth.month === 1) {
-            lastMonth.totalPayment = (parseFloat(lastMonth.totalPayment) + diff).toFixed(2);
-            remainingLoanAmount -= diff;
-        }
-    }
-
     return { monthlyPayments, totalPayment };
 }
 
