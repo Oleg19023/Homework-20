@@ -18,7 +18,7 @@ for (let i = 1; i <= loanTermMonths; i++) {
 
     if (i === loanTermMonths) {
         telo = Math.round(remainingLoanAmount * 100) / 100;
-        totalPayment = Math.round((telo + interest) * 100) / 100;
+        totalPayment = Math.round((telo + interestPayment) * 100) / 100;
     }
 
     totalPayments += totalPayment;
