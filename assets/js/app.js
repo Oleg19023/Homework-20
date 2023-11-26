@@ -1,6 +1,7 @@
-let loanTermMonths = +prompt('Колво месяцев: ');
+let loanTermMonths = +prompt('Количество месяцев:');
 let loanAmount = +prompt('Сумма кредита: ');
 let annualInterestRate = +prompt('Проценты в год: ');
+
 if(!isNaN(loanTermMonths) && !isNaN(loanAmount) && !isNaN(annualInterestRate)){
     let telo = Math.round((loanAmount / loanTermMonths) * 100) / 100;
     let interest = Math.round((loanAmount * (annualInterestRate / 100)) * 100) / 100;    
@@ -27,6 +28,7 @@ if(!isNaN(loanTermMonths) && !isNaN(loanAmount) && !isNaN(annualInterestRate)){
     
     console.log('Общая переплата:', Math.round(cum * 100) / 100);    
 }
-else{
+
+else {
     console.log('Введите корректные данные.')
 }
