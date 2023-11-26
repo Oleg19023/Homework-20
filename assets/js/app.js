@@ -53,4 +53,4 @@ const loanTermMonths = 12; // Срок кредитования в месяца�
 const { monthlyPayments, totalPayment } = calculateLoanPayments(loanAmount, annualInterestRate, loanTermMonths);
 
 console.log(monthlyPayments);
-console.log('Общая переплата:', totalPayment);
+console.log('Общая переплата:', Math.round(monthlyPayments.reduce((a, cv) => a + cv.interestPayment, 0)*100)/100 );
